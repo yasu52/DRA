@@ -112,7 +112,7 @@ def suffix_gen(question, model="gpt4", verbose=True, **kwargs):
     word_guide = ""
     for token in tokens:
         if token not in moderation_cache.keys():
-            judger = check_moderation(token)
+            judger = check_moderation(token, True)
             moderation_cache[token] = judger
         else:
             judger = moderation_cache[token]

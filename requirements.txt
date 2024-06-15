@@ -1,4 +1,7 @@
 torch==2.1.0
-detoxify==0.5.1
+detoxify==0.5.2
 openai==0.28.1
+transformers==4.34.1
 accelerate
+fire
+protobuf
