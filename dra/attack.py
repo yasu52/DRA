@@ -71,11 +71,11 @@ def prefix_gen(question, clean=False):
     return res, question
 
 
-def suffix_gen(question, model="gpt4", verbose=False, **kwargs):
+def suffix_gen(seed_path, question, model="gpt4", verbose=False, **kwargs):
     # [0] load cache
     if verbose:
         log_yellow(f"[*] Loading cached moderation result...")
-    moderation_cache_path = "./cache/moderation.json"
+    moderation_cache_path = seed_path
     moderation_cache = load_cache(moderation_cache_path)
     if verbose:
         log_red("[*] Cache loaded successfully!")
@@ -191,7 +191,7 @@ def suffix_gen(question, model="gpt4", verbose=False, **kwargs):
         json.dump(moderation_cache, f, indent=4)
     return suffix
 
-def llama_gen(question, verbose=False, **kwargs):
+def llama_gen(seed_path, question, verbose=False, **kwargs):
     if verbose:
         log_yellow(f"[*] Current Question: {question}")
     prefix, current_question = prefix_gen(question, clean=True)
@@ -200,7 +200,7 @@ def llama_gen(question, verbose=False, **kwargs):
         print(prefix)
     log_yellow(f"[*] Current Question: {current_question}")
     # gen llama
-    suffix = suffix_gen(current_question, model="llama", verbose=verbose, **kwargs)
+    suffix = suffix_gen(seed_path, current_question, model="llama", verbose=verbose, **kwargs)
     if verbose:
         log_blue(f"[+] Generated Suffix: ")
         print(suffix)
@@ -211,7 +211,7 @@ def llama_gen(question, verbose=False, **kwargs):
     return prompt
 
 
-def gpt4_gen(question, verbose=False, **kwargs):
+def gpt4_gen(seed_path, question, verbose=False, **kwargs):
     if verbose:
         log_yellow(f"[*] Current Question: {question}")
     prefix, current_question = prefix_gen(question)
@@ -219,7 +219,7 @@ def gpt4_gen(question, verbose=False, **kwargs):
         log_blue(f"[+] Generated Prefix: ")
         print(prefix)
         log_yellow(f"[*] Current Question: {current_question}")
-    suffix = suffix_gen(current_question, model = "gpt4", verbose=verbose, **kwargs)
+    suffix = suffix_gen(seed_path, current_question, model = "gpt4", verbose=verbose, **kwargs)
     if verbose:
         log_blue(f"[+] Generated Suffix: ")
         print(suffix)

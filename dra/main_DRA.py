@@ -22,6 +22,7 @@ from dra.harmfulbench_utils import predict
 
 
 def run_dra(
+    seed_path: str,
     target_model: str,
     goal_prompt: str,
     max_n_attack_attempts: int = 20,
@@ -40,14 +41,14 @@ def run_dra(
 
         for step in range(max_n_attack_attempts):
             if 'gpt-4' in target_model:
-                prompt = gpt4_gen(goal_prompt, verbose=verbose, **attack_kwargs)
+                prompt = gpt4_gen(seed_path, goal_prompt, verbose=verbose, **attack_kwargs)
                 print('*' * 20)
                 response = chat_with_gpt(prompt, target_model)
                 print(response)
                 print('*' * 20)
 
             elif 'gpt' in target_model:
-                prompt = llama_gen(goal_prompt, verbose=verbose, **attack_kwargs)
+                prompt = llama_gen(seed_path, goal_prompt, verbose=verbose, **attack_kwargs)
                 print('*' * 20)
                 response = chat_with_gpt(prompt, target_model)
                 print(response)
@@ -88,8 +89,8 @@ def run_dra(
         return prompt, response
 
 
-def run(target_model: str, goal_prompt: str, result_path: str):
-    adv_prompt, response = run_dra(target_model, goal_prompt)
+def run(seed_path: str, target_model: str, goal_prompt: str, result_path: str):
+    adv_prompt, response = run_dra(seed_path, target_model, goal_prompt)
     result = {'final_prompt': adv_prompt,
               'final_response': response}
     with open(result_path, 'w', encoding="utf8") as f:
