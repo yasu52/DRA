@@ -23,8 +23,8 @@ def get_version(rel_path):
 
 
 with open('requirements.txt', 'r') as requirements:
-    setup(name='tap',
-          version=get_version('tap/__init__.py'),
+    setup(name='dra',
+          version=get_version('dra/__init__.py'),
           install_requires=list(requirements.read().splitlines()),
           packages=find_packages(),
           description='library for creating adversarial prompts using DRA for language models',
