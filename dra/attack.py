@@ -187,8 +187,8 @@ def suffix_gen(seed_path, question, model="gpt4", verbose=False, **kwargs):
             suffix = suffix.replace('`', '"')
     
     # [4] write back the cache
-    with open(moderation_cache_path, "w") as f:
-        json.dump(moderation_cache, f, indent=4)
+    # with open(moderation_cache_path, "w") as f:
+    #     json.dump(moderation_cache, f, indent=4)
     return suffix
 
 def llama_gen(seed_path, question, verbose=False, **kwargs):
