@@ -16,7 +16,7 @@ from detoxify import Detoxify
 
 # Local Imports
 from dra.utils import *
-from dra.language_models import chat_with_gpt, chat_with_opensource, load_model
+from dra.language_models import chat_with_gpt, chat_with_opensource, chat_with_gemini, load_model
 from dra.attack import llama_gen, gpt4_gen, jailbreak_check
 from dra.harmfulbench_utils import predict
 
@@ -31,6 +31,8 @@ def run_dra(
     verbose: bool = False,
     ):
         if 'gpt' in target_model:
+            pass
+        elif 'gemini' in target_model:
             pass
         else:
             tokenizer, model, conv_prompt = load_model(target_model)        
@@ -51,6 +53,13 @@ def run_dra(
                 prompt = llama_gen(seed_path, goal_prompt, verbose=verbose, **attack_kwargs)
                 print('*' * 20)
                 response = chat_with_gpt(prompt, target_model)
+                print(response)
+                print('*' * 20)
+
+            elif 'gemini' in target_model:
+                prompt = gpt4_gen(seed_path, goal_prompt, verbose=verbose, **attack_kwargs)
+                print('*' * 20)
+                response = chat_with_gemini(prompt, target_model)
                 print(response)
                 print('*' * 20)
 

@@ -6,12 +6,15 @@ import time
 import torch
 import openai
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import google.generativeai as genai
 
 # Local Imports
 from dra.utils import log_yellow, LLAMA2_PROMPT_LONG, LLAMA2_PROMPT_SHORT, VICUNA_PROMPT
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
 
 def load_model(target_model):
     log_yellow('[*] Loading target model...')
@@ -37,13 +40,11 @@ def load_model(target_model):
     return tokenizer, model, conv_prompt
 
 
-
 def chat_with_gpt(prompt, model=None):
     if '3.5' in model:
         model = 'gpt-3.5-turbo-0613'
     elif 'gpt-4' in model:
         model = 'gpt-4-0613'
-
     temperature=0.0
     n=1
     max_trial = 50
@@ -64,7 +65,6 @@ def chat_with_gpt(prompt, model=None):
             print(e)
             time.sleep(5)
             continue
-
     return response.choices[0].message['content']
 
 
@@ -76,6 +76,25 @@ def chat_with_opensource(prompt, tokenizer, model, conv_prompt):
     outputs = model.generate(input_ids, max_new_tokens=400, do_sample=False)
     response = tokenizer.decode(outputs[0][num_input_tokens:], skip_special_tokens=True)
     return response
+
+
+def chat_with_gemini(prompt, model=None):
+    client = genai.GenerativeModel(model)
+    max_trial = 10
+    for _ in range(max_trial):
+        try:
+            response = client.generate_content(prompt,
+                                               generation_config=genai.types.GenerationConfig(
+                                               # Only one candidate for now.
+                                               candidate_count=1,
+                                               max_output_tokens=256,
+                                               temperature=0.0))
+            return response.text
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+            continue
+    return "$ERROR$ I'm sorry."
 
 
 def get_model_path(model_name):
