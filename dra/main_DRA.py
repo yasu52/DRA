@@ -64,7 +64,7 @@ def run_dra(
                 print('*' * 20)
 
             else:
-                prompt = llama_gen(goal_prompt, **attack_kwargs)
+                prompt = llama_gen(seed_path, goal_prompt, **attack_kwargs)
                 # generate response
                 print('*' * 20)
                 response = chat_with_opensource(prompt, tokenizer, model, conv_prompt)
